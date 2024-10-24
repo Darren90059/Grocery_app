@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grocery List App</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #e5decf; 
+    }
+    .container {
+      background-color: #e5decf; 
+    }
+  </style>
+</head>
+<body>
+  <div id="app" class="container mt-5">
+    <h2 class="mb-4">Grocery List</h2>
+
+    <div class="form-row align-items-center mb-4">
+      <div class="col-md-4">
+        <input v-model="newItem" type="text" class="form-control" placeholder="Enter grocery item">
+      </div>
+      <div class="col-md-2">
+        <input v-model="newQuantity" type="number" class="form-control" placeholder="Quantity" min="1">
+      </div>
+      <div class="col-md-4">
+        <input v-model="newNotes" type="text" class="form-control" placeholder="Notes">
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-success w-100" @click="addItem">Add Item</button>
+      </div>
+    </div>
+
+    <ul class="list-group">
+      <li v-for="(item, index) in groceryList" :key="index" class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+          <input type="checkbox" v-model="item.done" class="mr-2">
+          <span :class="{ 'text-decoration-line-through': item.done }">
+            {{ item.name }} ({{ item.quantity }}) 
+            <span v-if="item.notes">- ({{ item.notes }})</span>
+          </span>
+        </div>
+        <button class="btn btn-danger btn-sm" @click="removeItem(index)">Delete</button>
+      </li>
+    </ul>
+  </div>
+
+  <script>
+    const { createApp } = Vue;
+
+    createApp({
+      data() {
+        return {
+          newItem: '',
+          newQuantity: '', 
+          newNotes: '',
+          groceryList: []
+        };
+      },
+      methods: {
+        addItem() {
+          if (this.newItem && this.newQuantity > 0) {
+            this.groceryList.push({
+              name: this.newItem,
+              quantity: this.newQuantity,
+              notes: this.newNotes,
+              done: false
+            });
+            this.newItem = '';
+            this.newQuantity = ''; 
+            this.newNotes = '';
+          } else {
+            alert('Please enter a valid item and quantity');
+          }
+        },
+        removeItem(index) {
+          this.groceryList.splice(index, 1);
+        }
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
